@@ -1,0 +1,11 @@
+obj:
+  _target_: fingerspelling_trainer.training.models.tcn_transformer.TCNTransformerTranslator
+  model_cfg:
+    input_dim: 63
+    tcn_hidden: 128
+    tcn_depth: 4
+    tcn_kernel: 5
+    n_heads: 4
+    n_tf_layers: 2
+    dropout: 0.3
+    max_len: 1000

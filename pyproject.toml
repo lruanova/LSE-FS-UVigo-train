@@ -1,0 +1,48 @@
+[project]
+dependencies = [
+  "adamp>=0.3.0",
+  "keypoint-extraction-pipeline",
+  "lightning>=2.5.1.post0",
+  "ray[train]>=2.46.0",
+  "torch-geometric>=2.6.1",
+  "wandb>=0.19.11",
+  "torch>=2.5.0",
+  "torchvision>=0.22.0",
+  "torchaudio>=2.5.0",
+  "joblib>=1.5.1",
+  "scikit-learn>=1.6.1",
+  "tqdm>=4.67.1",
+  "ipynb>=0.5.1",
+  "torch-geometric-temporal>=0.56.0",
+  "orjson>=3.10.18",
+  "fast-ctc-decode",
+]
+description = "Add your description here"
+name = "fingerspelling_trainer"
+readme = "README.md"
+requires-python = ">=3.12"
+version = "0.1.0"
+
+[tool.uv.sources]
+fast-ctc-decode = {path = "../../../../../gts/projects/lruanova/projects/signamed/fast-ctc-decode/target/wheels/fast_ctc_decode-0.3.6-cp312-cp312-manylinux_2_34_x86_64.whl"}
+keypoint-extraction-pipeline = {path = "../keypoint-extraction-pipeline", editable = true}
+torch = [{index = "pytorch-cu118", marker = "sys_platform == 'linux' or sys_platform == 'win32'"}]
+torchaudio = [{index = "pytorch-cu118", marker = "sys_platform == 'linux' or sys_platform == 'win32'"}]
+torchvision = [{index = "pytorch-cu118", marker = "sys_platform == 'linux' or sys_platform == 'win32'"}]
+
+[[tool.uv.index]]
+explicit = true
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+
+[tool.setuptools.packages.find]
+include = ["fingerspelling_trainer*"]
+where = ["."]
+
+[dependency-groups]
+dev = [
+  "ipykernel>=6.29.5",
+  "ipywidgets>=8.1.7",
+  "seaborn>=0.13.2",
+  "ydata-profiling>=4.16.1",
+]

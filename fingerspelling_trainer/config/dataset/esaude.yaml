@@ -1,0 +1,4 @@
+
+data_path: /home/gts/projects/lruanova/tmpkps/transformed
+num_workers_dataloader: 4
+include_velocity: false

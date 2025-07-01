@@ -1,0 +1,8 @@
+type: weighted
+blank_token: 0
+weights_path: /home/gts/projects/lruanova/combined/transformed/weights.pt
+renorm: true
+warmup_epochs: 1
+ramp_epochs: 10
+gamma: 1.0
+

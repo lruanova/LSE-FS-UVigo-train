@@ -1,0 +1,5 @@
+type: focal
+blank_token: 0
+gamma: 1.0
+warmup_epochs: 4
+ramp_epochs: 6
