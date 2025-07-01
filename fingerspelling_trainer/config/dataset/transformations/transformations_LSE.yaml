@@ -1,0 +1,57 @@
+train:
+  obj:
+    _target_: fingerspelling_trainer.data.compose_transforms.ComposeTransforms
+    transforms:
+
+      # >>> encode labels
+      - _target_ : fingerspelling_trainer.data.transformations.encode_label.EncodeLabel
+        alphabet: ${dataset.alphabet}
+        collapse_repeated: false # if true, collapses "RR" to "R" and "LL" to "L"
+        remove_non_alphabetic: false # if true, removes symbols like "@"
+        include_spaces: false
+        validate: false # decode to ensure is the same
+
+      # >>> cleaning
+      - _target_: fingerspelling_trainer.data.transformations.filter_samples.FilterSamples
+
+      # >>> hand canonization
+      - _target_: fingerspelling_trainer.data.transformations.canonicalize_hand.CanonicalizeHand
+
+      # >>> scaling
+      - _target_: fingerspelling_trainer.data.transformations.scale_keypoints.ScaleKeypoints
+        # scaler_path: ${dataset.data_path}/scaler.pkl
+        scaler_dir: ${dataset.data_path}
+
+      # >>> speed jitter
+      - _target_: fingerspelling_trainer.data.transformations.speed_augmentation.SpeedJitter
+        p: 0.8
+        min_scale: 0.5
+        max_scale: 2.0
+
+      # >>> mirror augmentation
+      # - _target_: fingerspelling_trainer.data.transformations.mirror_hands_augmentation.MirrorHands
+      #   p: 0.5
+
+test:
+  obj:
+    _target_: fingerspelling_trainer.data.compose_transforms.ComposeTransforms
+    transforms:
+      # >>> encode labels
+      - _target_ : fingerspelling_trainer.data.transformations.encode_label.EncodeLabel
+        alphabet: ${dataset.alphabet}
+        collapse_repeated: false # if true, collapses "RR" to "R" and "LL" to "L"
+        remove_non_alphabetic: false # if true, removes symbols like "@"
+        include_spaces: false
+        validate: false # decode to ensure is the same
+
+      # >>> cleaning
+      - _target_: fingerspelling_trainer.data.transformations.filter_samples.FilterSamples
+
+      # >>> canonization
+      - _target_: fingerspelling_trainer.data.transformations.canonicalize_hand.CanonicalizeHand
+
+      # >>> scaling
+      - _target_: fingerspelling_trainer.data.transformations.scale_keypoints.ScaleKeypoints
+        # scaler_path: ${dataset.data_path}/scaler.pkl
+        scaler_dir: ${dataset.data_path}
+

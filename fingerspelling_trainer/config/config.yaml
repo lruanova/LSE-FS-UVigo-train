@@ -1,0 +1,26 @@
+defaults:
+  - dataset: combined
+  - learner: translation
+  - model: aagcn_test
+  - _self_
+
+wandb:
+  project_name: fingerspelling
+  run_name: test_run
+mode: train
+evaluation:
+  checkpoint_path: ""
+  log_to_wandb: false
+  wandb_run_id: null
+
+ray:
+  num_workers: 4
+  use_gpu: true
+
+inference:
+  sample_path: ""
+  checkpoint_path: ""
+  scaler:
+    obj:
+      _target_: fingerspelling_trainer.data.transformations.scale_keypoints.ScaleKeypoints
+      scaler_dir: ${dataset.data_path}

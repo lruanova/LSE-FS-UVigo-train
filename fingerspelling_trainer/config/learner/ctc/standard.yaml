@@ -1,0 +1,9 @@
+type: standard
+blank_token: 0
+zero_infinity: true
+reduction: mean
+
+# ignore, just to avoid error -- TODO: Manage this on hydra better
+warmup_epochs: 0.0
+ramp_epochs:   0.0
+gamma:         0.0

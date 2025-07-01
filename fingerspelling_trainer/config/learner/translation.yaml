@@ -1,0 +1,10 @@
+defaults:
+  - ctc: standard # standard | weighted | focal
+  - decoder: beam # beam | greedy | combined
+
+obj:
+  _target_: fingerspelling_trainer.training.learners.translation_learner.TranslationLearner
+
+log_fpc_quintiles: true
+compute_cer_on_train: false
+log_cer_on_train_step: true

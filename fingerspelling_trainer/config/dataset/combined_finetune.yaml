@@ -1,0 +1,107 @@
+defaults:
+  - transformations: transformations_LSE
+  - alphabet: spanish
+
+data_path: /home/gts/projects/lruanova/projects/signamed/data/LSE/transformed
+num_workers_dataloader: 4
+
+finetune:
+  enabled: false
+  ckpt_path: "/home/gts/projects/lruanova/projects/signamed/results/checkpoints/fswild_best.ckpt"
+
+
+sampler:
+  enabled: true
+  mode: original # original | freq
+  dataset_multiplier: 2
+  filename: "weights_sampler.pt"
+  motion_tokens: ["@", "RR", "LL", "CH", "Ñ"]
+  rare_tokens: ["J","K","Q","W","Y"]
+  base_boost: 1.0
+  motion_boost: 5.0
+  rare_boost: 2.0
+  use_fpc: false
+  fpc_boosts: [4,2,1,1,1.5]
+  clip_value: 15.0
+  alphabet: ${dataset.alphabet}
+
+
+training:
+  default_root_dir: /home/gts/projects/lruanova/refactor_fingerspelling/
+  run_test_after_train: true
+
+  seed: 42
+  batch_size: 8
+  max_epochs: 10
+  gradient_max_norm : 1.0
+
+  optimizer:
+    obj:
+      _target_: adamp.AdamP
+
+    learning_rate: 1e-4
+    param_groups:
+      - {pattern: "^head",           lr: 1e-3}
+      - {pattern: "^tcn",            lr: 5e-4}
+      - {pattern: "^gnn\\.layers\\.\\d+$", lr: 1e-4}
+      - {pattern: "\\.PA$",          lr: 5e-5}
+
+    weight_decay : 1e-3
+    cosine_decay: True
+    warmup_epochs: 2
+    schedule_predictors: False # if to apply lr schedule to predictors
+
+  callbacks:
+    progressive_ft:
+      active: ${dataset.finetune.enabled}
+      obj:
+        _target_: fingerspelling_trainer.training.utils.fine_tune_utils.ProgressiveUnfreeze
+        schedule:
+        - {epoch: 0, train: ["head"], lr_mult: 1.0}
+        - {epoch: 2, train: ["head", "tcn"], lr_mult: 1.0}
+        - {epoch: 3, train: ["head", "tcn", "gnn.last", "PA"], lr_mult: 1.0}
+        - {epoch: 4, train: ["head", "tcn", "gnn.last", "gnn.penult", "PA"], lr_mult: 1.0}
+        - {epoch: 5, train: ["head", "tcn", "gnn.last", "gnn.penult", "gnn", "PA"], lr_mult: 0.5}
+
+    ray_train_report:
+      active: true
+      obj:
+        _target_: ray.train.lightning.RayTrainReportCallback
+    early_stopping:
+      active: true
+      obj:
+        _target_: lightning.pytorch.callbacks.EarlyStopping
+        monitor: "val/loss"
+
+        patience: 2
+
+    model_checkpoint:
+      active: true
+      obj:
+        _target_: lightning.pytorch.callbacks.ModelCheckpoint
+        monitor: "val/loss"
+        save_top_k: 1
+        mode: "min"
+        filename: "{epoch:02d}-{val/loss:.4f}"
+
+    ctc_ramp:
+      active: ${learner.ctc.type} != "standard"
+      obj:
+        _target_: fingerspelling_trainer.training.utils.ctc_ramp_callback.CTCRampCallback
+        ctc_type: ${learner.ctc.type}
+        start_epoch: ${learner.ctc.warmup_epochs}
+        ramp_epochs: ${learner.ctc.ramp_epochs}
+        gamma_final: ${learner.ctc.gamma}
+        verbose_name: ${learner.ctc.type}
+
+    swa:
+      active: true
+      obj:
+        _target_: lightning.pytorch.callbacks.StochasticWeightAveraging
+        swa_lrs: 1e-4  # learning rate when active
+        swa_epoch_start: 0.4  # % of training when it starts
+
+  scheduler: # TODO: Hardcoded
+    eta_min: 0.0
+
+

@@ -1,0 +1,22 @@
+obj:
+  _target_: fingerspelling_trainer.training.models.aagcn_test.AAGCNTranslator
+
+  model_cfg:
+      add_velocity: true
+      spatial_pool: none
+      gnn:
+        hidden_dims: [64, 64]
+        vel_conn: fingers
+        edge_index_builder:
+          _target_: fingerspelling_trainer.training.utils.graph_utils.EdgeIndexBuilder
+          strategy: mediapipe
+          selected_landmarks: ["LEFT_HAND", "RIGHT_HAND"]
+          undirected: true
+          edges_from_cfg: {}
+      tcn:
+        hidden_dim: 128
+        depth: 1
+        kernel_size: 5
+      mlp:
+        hidden_dim: 128
+        dropout: 0.35
