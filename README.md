@@ -72,8 +72,8 @@ uv run python fingerspelling_trainer/main.py mode=evaluate evaluation.checkpoint
 
 ## Notes
 -  **fast-ctc-decode** : This repo depends on a custom fork of fast-ctc-decode with support for multi-letter tokens (e.g., "LL", "RR", etc. in LSE). This is configured in pyproject.toml. You can use [this implementation](https://github.com/lruanova/fast-ctc-decode).
-- **Keypoint Extraction**: The keypoints used here were extracted according to the protocol described in the article. You can use the provided: [keypoint extraction pipeline](placeholder).
-- Weights & Biases (See config) was used for tracking experiments, and Ray for distributed training.
+- **Keypoint Extraction**: The keypoints used here were extracted according to the protocol described in the article. You can use the provided: [keypoint extraction code](https://github.com/lruanova/LSE-FS-UVigo-extraction/). 
+- Weights & Biases (See config) was used for tracking experiments, and Ray for distributed training. 
 
 ## How to cite
 
