@@ -18,8 +18,8 @@ This project provides:
 
 ### LSE-FS-UVigo Download
 
-The dataset and download instructions are available here:
-**[👉 Dataset Download & Info (placeholder)]()**
+The dataset and download instructions are available on Zenodo:
+**[📎 Dataset Download](https://zenodo.org/records/15797079)**
 
 ### ChicagoFSWild+
 
